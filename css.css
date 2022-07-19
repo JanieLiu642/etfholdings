@@ -134,6 +134,10 @@ h3 span {
 thead td {
     font-weight:bold;
     padding:5px 10px 10px;
+    border-bottom:dotted 1px gray;
+}
+.compare-display thead td {
+    border:0;
 }
 table td:nth-child(1) {
     width:10%;
@@ -170,7 +174,7 @@ label {
     margin-right:5px;
 }
 .row-limit {
-    margin:0 0 8px 8px;
+    margin:0 0 20px 8px;
 }
 .simple-search input {
     width:150px;
@@ -241,15 +245,42 @@ select {
 .highlight {
     color: #00b067;
 }
-.ticker-add {
+.weight-header {
+    white-space:nowrap;
     cursor:pointer;
 }
-.ticker-add:hover, .ticker-add:hover::before {
+.weight-header.sorted::after {
+    content: ' ▾';
+}
+.weight-header.reverse-sorted::after  {
+    content: ' ▴';
+}
+.weight-header:hover, .weight-header:hover::after {
+    color:#0090a9;
+}
+.weight-header:active, .weight-header:active::after {
+    color:#006273;
+}
+.ticker-add {
+    cursor:pointer;
+    position:relative;
+}
+.ticker-add span {
+    position:absolute;
+    display:block;
+    padding:5px 20px;
+    background-color:white;
+    box-shadow:2px 2px 3px #f1f1f1;
+    top:0;
+    right:-120px;
+    white-space:nowrap;
+}
+.ticker-add a:hover, .ticker-add a:hover::before {
     font-weight:bold;
     content: '+ ';
     color: #00b067;
 }
-.ticker-add:active, .ticker-add:active::before {
+.ticker-add a:active, .ticker-add a:active::before {
     font-weight:bold;
     content: '+ ';
     color: #006b3c;

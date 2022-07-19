@@ -35,6 +35,7 @@ fetch("etf.json").then(response => {
    $(document).ready(function(){
     const init_arr = []
     let temp_arr = []
+    let display_default = 30
     init_load()
 
     $(".simple-search input").keyup((e) => {
@@ -87,19 +88,21 @@ fetch("etf.json").then(response => {
         display_row(init_arr)
     }
 
-    function display_row(arr, limit=30) {
+    function display_row(arr, limit=display_default, sorted_weight='') {
         temp_arr = [...arr]
         let html = '<div class="row-limit"><select id="row-limit" name="row-limit">'
         for (let option of [30, 50, 100]) {
              html += `<option value="${option}" ${option === limit ? 'selected': ''}>${option} Records</option>`
         }
-        html += '</select></div><table><thead><tr><td>Ticker</td><td>Title</td><td>Holding</td><td>Weight</td></tr></thead><tbody class="table-content">'
+        html += `</select></div><table><thead><tr><td>Ticker</td><td>Title</td><td>Holding</td>
+                <td class="weight-header ${sorted_weight}">Weight</td></tr>
+                </thead><tbody class="table-content">`
         if (arr.length) {
             arr = arr.slice(0, limit)
             for (let ele of arr) {
                 html += '<tr>'
                 for (let i = 0; i < ele.length; i++) {
-                    i === 0 && ele[i] ? html += `<td class="ticker-add">${ele[i]}</td>` : html += `<td>${ele[i]}</td>`
+                    i === 0 && ele[i] ? html += `<td class="ticker-add"><a>${ele[i]}</a></td>` : html += `<td>${ele[i]}</td>`
                 }
                 html += '</tr>'
             }
@@ -110,9 +113,18 @@ fetch("etf.json").then(response => {
         $(".display-area").empty().append(html)
         scroll_to_top()
         $("#row-limit").change(function() {
-            display_row(temp_arr, parseInt($("#row-limit option:selected").val()))
+            const row = parseInt($("#row-limit option:selected").val())
+            display_default = row
+            display_row(temp_arr, row)
         })
-        $(".ticker-add").click(function() {
+        $(".weight-header").click(function() {
+            if ($(this).hasClass('sorted')) {
+                display_row(sort_by_weight(temp_arr, true), display_default, 'reverse-sorted')
+            } else {
+                display_row(sort_by_weight(temp_arr), display_default, 'sorted')
+            }
+        })
+        $(".ticker-add a").click(function() {
             const ticker = $(this).text()
             const inputs = [$("#ticker-1").val().toUpperCase(), $("#ticker-2").val().toUpperCase()]
             if (!inputs.includes(ticker)) {
@@ -126,7 +138,24 @@ fetch("etf.json").then(response => {
                     $("#ticker-2").val(ticker)
                 }
             }
+            $('.ticker-add span').remove()
+            $(this).parent().append('<span>Added to Compare!</span>')
+            setTimeout(() => {
+                $(this).parent().find('span').remove()
+            }, 1200)
         })
+    }
+
+    function sort_by_weight(arr, reverse=false) {
+        const return_arr = [...arr]
+        return_arr.sort((first, second) => {
+            return reverse ? parseWeight(first[3]) - parseWeight(second[3]) : parseWeight(second[3]) - parseWeight(first[3])
+        })
+        return return_arr
+    }
+
+    function parseWeight(weight) {
+        return typeof weight === 'string' ? parseFloat(weight.replace('%', '')) : weight
     }
 
     function scroll_to_top() {
