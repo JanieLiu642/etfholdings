@@ -5,6 +5,11 @@
     font-size:14px;
     color: #245b55;
 }
+:root {
+    --container-size: 60%;
+    --header-padding-top: 40px;
+    --display-area-padding-top: calc(var(--header-padding-top) + 170px);
+}
 body {
      background-color: #e7f9ff;
 }
@@ -40,7 +45,7 @@ hr {
     margin:0 auto;
     min-height:100vh;
     padding-bottom:30px;
-    width:80%;
+    width:var(--container-size);
 }
 .container-head {
     padding:55px 5px 0;
@@ -55,7 +60,7 @@ hr {
     display:flex;
     flex-direction:row;
     justify-content: space-between;
-    width:70%;
+    width: var(--container-size);
     margin:0 auto;
 }
 .blocker {
@@ -69,8 +74,8 @@ hr {
 }
 .display-area {
     margin:0 auto;
-    padding:190px 0 50px;
-    width:70%;
+    padding:var(--display-area-padding-top) 0 50px;
+    width:var(--container-size);
 }
 .compare-display {
     width:100%;
@@ -142,7 +147,7 @@ table td:last-of-type {
 tbody td {
     padding:5px 10px;
     line-height:1.5;
-    font-size:12px;
+    font-size:14px;
 }
 .simple-search, .compare-search {
     margin-bottom:30px;
@@ -151,19 +156,17 @@ tbody td {
     align-items:center;
 }
 input {
-    font-size:11px;
     height:15px;
     outline:none;
 }
 input:focus {
-    border:1.5px solid #006273;
+    border:2px solid #006273;
     border-radius:2px;
 }
-select, select option {
-    font-size:11px;
+select, select option, label, input {
+    font-size:13px;
 }
 label {
-    font-size:12px;
     margin-right:5px;
 }
 .row-limit {
@@ -199,7 +202,7 @@ select {
 }
 .auto-complete a {
     padding: 5px 0 5px 5px;
-    font-size:11px;
+    font-size:12px;
     cursor:pointer;
     text-decoration:none;
     display:block;
@@ -218,7 +221,7 @@ select {
     height:19px;
     background-color:#0090a9;
     color:white;
-    font-size:11px;
+    font-size:13px;
     cursor:pointer;
     text-align:center;
     border-radius:2px;
@@ -252,13 +255,12 @@ select {
     color: #006b3c;
 }
 
-@media (max-width:800px) {
-    .display-area {
-        width:95%;
-        padding-top: 240px;
+@media (max-width:1000px) {
+    :root {
+        --container-size: 95%;
+        --display-area-padding-top: calc(var(--header-padding-top) + 200px);
     }
     .search-area {
-        width:95%;
         flex-direction:column;
         justify-content:center;
     }
