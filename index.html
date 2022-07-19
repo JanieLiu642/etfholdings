@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canadian ETF Holdings</title>
+    <link rel="stylesheet" href="css.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="etf_raw.js"></script>
+</head>
+<body>
+    <div class="container-head">
+            <h1>Canadian ETF Holdings</h1>
+            <div class="search-area">
+                <div class="simple-search">
+                    <label for="simple-search">Search By</label>
+                    <select name="options" id="options" tabindex="1">
+                        <option value="general">General</option>
+                        <option value="ticker">Ticker</option>
+                        <option value="title">Title</option>
+                        <option value="holding">Holding</option>
+                    </select>
+                    <input type="text" id="simple-search" tabindex="2">
+                </div>
+                <div class="blocker"></div>
+                <div class="compare-search">
+                    <div>
+                        <input type="text" id="ticker-1" placeholder="Ticker1" tabindex="3">
+                        <div class="auto-complete"></div>
+                    </div>
+                    <div>
+                        <input type="text" id="ticker-2" placeholder="Ticker2" tabindex="4">
+                        <div class="auto-complete"></div>
+                    </div>
+                    <button class="compare-btn" tabindex="5">Compare</button>
+                </div>
+            </div>
+        </div>
+    <div class="display-area">
+        <table>
+            <thead>
+                <tr>
+                    <td>Ticker</td>
+                    <td>Title</td>
+                    <td>Holding</td>
+                    <td>Weight</td>
+                </tr>
+            </thead>
+            <tbody class="table-content">
+                <tr><td colspan="4" class="center">Loading Content...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
