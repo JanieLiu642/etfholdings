@@ -208,8 +208,9 @@ fetch("etf.json").then(response => {
             } else {
                 for (let item of ['ticker', 'title', 'holding']) {
                     const arr = search_by(input, item)
-                    combine_arr  = [...combine_arr, ...arr]
-                    if (combine_arr.length > 5) break
+                    for (let ele of arr) {
+                        if (!combine_arr.find(rec => rec[3] === ele[3])) combine_arr.push(ele)
+                    }
                 }
             }
             display_row(combine_arr)
