@@ -272,8 +272,9 @@ select {
     background-color:white;
     box-shadow:2px 2px 3px #f1f1f1;
     top:0;
-    right:-120px;
+    right:-75px;
     white-space:nowrap;
+    font-size:12px;
 }
 .ticker-add a:hover, .ticker-add a:hover::before {
     font-weight:bold;
