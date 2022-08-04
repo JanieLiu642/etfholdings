@@ -1,32 +1,40 @@
-fetch("etf.json").then(response => {
+fetch("holdings.json").then(response => {
    return response.json()
-}).then(data => {
-   const etf_raw = {}
-   for (let d of data) {
-      if (etf_raw[d['Ticker']] !== undefined) {
-         etf_raw[d['Ticker']]['holdings'].push({
-             "name": d['Holding'],
-             "weight": Math.abs(d['Weight'])
-         })
-      } else {
-         etf_raw[d['Ticker']] = {
-            "link": d['Link'],
-            "title": d['Title'],
-            "holdings": [
-               {
-                  "name": d['Holding'],
-                  "weight": Math.abs(d['Weight'])
-               }
-            ]
-         }
-      }
-   }
-    const holding_list = {}
+}).then(data_holdings => {
+    const holding_dict = {}
+    for (let d of data_holdings) {
+            holding_dict[d['Holding']] = d['Ticker']
+    }
+
+    fetch("etf.json").then(response => {
+        return response.json()
+    }).then(data => {
+          const etf_raw = {}
+          for (let d of data) {
+              if (etf_raw[d['Ticker']] !== undefined) {
+                 etf_raw[d['Ticker']]['holdings'].push({
+                     "name": d['Holding'],
+                     "ticker": holding_dict[d['Holding']] ? holding_dict[d['Holding']] : '',
+                     "weight": Math.abs(d['Weight'])
+                 })
+              } else {
+                 etf_raw[d['Ticker']] = {
+                    "link": d['Link'],
+                    "title": d['Title'],
+                    "holdings": [
+                       {
+                          "name": d['Holding'],
+                          "ticker": holding_dict[d['Holding']] ? holding_dict[d['Holding']] : '',
+                          "weight": Math.abs(d['Weight'])
+                       }
+                    ]
+                 }
+              }
+       }
+   const holding_list = {}
     for (let key of Object.keys(etf_raw)) {
         for (let holding of etf_raw[key]['holdings']) {
-            if (holding['name'] !== '' && holding['name'] !== '--') {
-                holding_list[holding['name']] ? holding_list[holding['name']] += 1 : holding_list[holding['name']] = 1
-            }
+            holding_list[holding['name']] ? holding_list[holding['name']] += 1 : holding_list[holding['name']] = 1
         }
     }
     const sorted_holdings = Object.keys(holding_list).map(key => { return [key, holding_list[key]] })
@@ -81,7 +89,8 @@ fetch("etf.json").then(response => {
     function init_load() {
         if (init_arr.length === 0) {
             for (let holding of sorted_holdings.slice(0, 10)) {
-                const record = ['', '', holding[0], holding[1]]
+                const ticker = holding_dict[holding[0]] ? holding_dict[holding[0]] : ''
+                const record = ['', '', ticker, holding[0], holding[1]]
                 init_arr.push(record)
             }
         }
@@ -94,7 +103,7 @@ fetch("etf.json").then(response => {
         for (let option of [30, 50, 100]) {
              html += `<option value="${option}" ${option === limit ? 'selected': ''}>${option} Records</option>`
         }
-        html += `</select></div><table><thead><tr><td>Ticker</td><td>Title</td><td>Holding</td>
+        html += `</select></div><table><thead><tr><td>Ticker</td><td>Title</td><td>Holding Ticker</td><td>Holding</td>
                 <td class="weight-header ${sorted_weight}">Weight</td></tr>
                 </thead><tbody class="table-content">`
         if (arr.length) {
@@ -107,7 +116,7 @@ fetch("etf.json").then(response => {
                 html += '</tr>'
             }
         } else {
-            html += '<tr><td colspan="4" class="center">No Results</td></tr>'
+            html += '<tr><td colspan="5" class="center">No Results</td></tr>'
         }
         html += '</tbody></table>'
         $(".display-area").empty().append(html)
@@ -149,7 +158,7 @@ fetch("etf.json").then(response => {
     function sort_by_weight(arr, reverse=false) {
         const return_arr = [...arr]
         return_arr.sort((first, second) => {
-            return reverse ? parseWeight(first[3]) - parseWeight(second[3]) : parseWeight(second[3]) - parseWeight(first[3])
+            return reverse ? parseWeight(first[4]) - parseWeight(second[4]) : parseWeight(second[4]) - parseWeight(first[4])
         })
         return return_arr
     }
@@ -168,7 +177,7 @@ fetch("etf.json").then(response => {
             for (let key of Object.keys(etf_raw)) {
                 if (key.includes(input.toUpperCase())) {
                     for (let holding of etf_raw[key]['holdings']) {
-                        const record = [key, etf_raw[key]['title'], holding['name'],
+                        const record = [key, etf_raw[key]['title'], holding['ticker'], holding['name'],
                                         parseFloat(holding['weight'] * 100).toFixed(1) + '%']
                         arr.push(record)
                     }
@@ -178,7 +187,7 @@ fetch("etf.json").then(response => {
             for (let key of Object.keys(etf_raw)) {
                 if (etf_raw[key]['title'].toLowerCase().includes(input.toLowerCase())) {
                     for (let holding of etf_raw[key]['holdings']) {
-                        const record = [key, etf_raw[key]['title'], holding['name'],
+                        const record = [key, etf_raw[key]['title'], holding['ticker'], holding['name'],
                                         parseFloat(holding['weight'] * 100).toFixed(1) + '%']
                         arr.push(record)
                     }
@@ -188,7 +197,18 @@ fetch("etf.json").then(response => {
             for (let key of Object.keys(etf_raw)) {
                 for (let holding of etf_raw[key]['holdings']) {
                     if (holding['name'].toLowerCase().includes(input.toLowerCase())) {
-                       const record = [key, etf_raw[key]['title'], holding['name'],
+                       const record = [key, etf_raw[key]['title'], holding['ticker'], holding['name'],
+                                        parseFloat(holding['weight'] * 100).toFixed(1) + '%']
+                        arr.push(record)
+                        break
+                    }
+                }
+            }
+        } else if (option === 'holding-ticker') {
+            for (let key of Object.keys(etf_raw)) {
+                for (let holding of etf_raw[key]['holdings']) {
+                    if (holding['ticker'].includes(input.toUpperCase())) {
+                       const record = [key, etf_raw[key]['title'], holding['ticker'], holding['name'],
                                         parseFloat(holding['weight'] * 100).toFixed(1) + '%']
                         arr.push(record)
                         break
@@ -206,10 +226,12 @@ fetch("etf.json").then(response => {
                 const arr = search_by(input, opt)
                 combine_arr = [...arr]
             } else {
-                for (let item of ['ticker', 'title', 'holding']) {
+                for (let item of ['ticker', 'title', 'holding-ticker', 'holding']) {
                     const arr = search_by(input, item)
                     for (let ele of arr) {
-                        if (!combine_arr.find(rec => rec[3] === ele[3])) combine_arr.push(ele)
+                        if (!combine_arr.find(rec => rec[0] === ele[0] && rec[3] === ele[3])) {
+                            combine_arr.push(ele)
+                        }
                     }
                 }
             }
@@ -267,7 +289,7 @@ fetch("etf.json").then(response => {
         let weight_overlap = 0
         for (let key of [a, b]) {
             table_html += `<div><div class="compare-title"><h2>${key}</h2><p>${etf_raw[key]['title']}</p></div>
-                            <hr><table><thead><tr><td>Holding</td><td>Weight</td></tr></thead><tbody>`
+                            <hr><table><thead><tr><td>Ticker</td><td>Holding</td><td>Weight</td></tr></thead><tbody>`
             const non_highlight = []
             const highlight_arr = []
             for (let item of etf_raw[key]['holdings']) {
@@ -286,11 +308,11 @@ fetch("etf.json").then(response => {
             }
             for (let record of highlight_arr) {
                 weight_overlap += record['weight']
-                table_html += `<tr><td class="highlight">${record['name']}</td>
+                table_html += `<tr><td class="highlight">${record['ticker']}</td><td class="highlight">${record['name']}</td>
                         <td class="highlight">${parseFloat(record['weight'] * 100).toFixed(1) + '%'}</td></tr>`
             }
             for (let record of non_highlight) {
-                table_html += `<tr><td>${record['name']}</td>
+                table_html += `<tr><td>${record['ticker']}</td><td>${record['name']}</td>
                         <td>${parseFloat(record['weight'] * 100).toFixed(1) + '%'}</td></tr>`
             }
             table_html +="</tbody></table></div>"
@@ -304,7 +326,9 @@ fetch("etf.json").then(response => {
         scroll_to_top()
     }
 })
+   })
 })
+
 
 
 
