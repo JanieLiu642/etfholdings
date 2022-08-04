@@ -73,7 +73,7 @@ hr {
 }
 .display-area {
     margin:0 auto;
-    padding:var(--display-area-padding-top) 0 50px;
+    padding:var(--display-area-padding-top) 0 35px;
     width:var(--container-size);
 }
 .compare-display {
@@ -286,7 +286,14 @@ select {
     content: '+ ';
     color: #006b3c;
 }
-
+.footer {
+    margin-bottom:80px;
+}
+.footer p {
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+}
 @media screen and (max-width:1000px) {
     :root {
         --container-size: 95%;
