@@ -19,6 +19,7 @@ h1 {
     margin-left:10px;
     margin-bottom:30px;
     color:teal;
+    font-style:italic;
 }
 h2 {
     margin:0 15px 0 10px;
@@ -293,12 +294,24 @@ select {
     margin:10px auto 0;
     padding:30px 0 40px;
     background-color: #d1eff6;
+    font-size:14px;
 }
 .footer p, .footer p b {
     text-align:center;
     margin-top:13px;
-    font-size:14px;
-    color:teal;
+}
+.footer a {
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    color:#0090a9;
+    margin-top:25px;
+}
+.footer a:active {
+    color:#006b3c;
+}
+.footer a:hover {
+    color:#006b3c;
 }
 @media screen and (max-width:1200px) {
     :root {
