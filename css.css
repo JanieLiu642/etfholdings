@@ -77,6 +77,7 @@ hr {
     padding:var(--display-area-padding-top) 0 35px;
     width:var(--container-size);
     min-height:50vh;
+    max-width:100%;
 }
 .compare-display {
     width:100%;
@@ -137,6 +138,7 @@ thead td {
     padding:5px 10px 10px;
     border-bottom:dotted 1px gray;
     font-size:0.9em;
+    line-height:1.5;
 }
 .compare-display thead td {
     border:0;

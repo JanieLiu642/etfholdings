@@ -95,6 +95,7 @@ fetch("holdings.json").then(response => {
             }
         }
         display_row(init_arr)
+        $(".display-area thead td:nth-child(4)").text('Top Holdings')
     }
 
     function display_row(arr, limit=display_default, sorted_weight='') {
@@ -131,6 +132,9 @@ fetch("holdings.json").then(response => {
                 display_row(sort_by_weight(temp_arr, true), display_default, 'reverse-sorted')
             } else {
                 display_row(sort_by_weight(temp_arr), display_default, 'sorted')
+            }
+            if ($(".display-area tbody tr:nth-child(1) td:nth-child(1)").text() === '') {
+                $(".display-area thead td:nth-child(4)").text('Top Holdings')
             }
         })
         $(".ticker-add a").click(function() {
