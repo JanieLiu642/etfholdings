@@ -103,7 +103,7 @@ fetch("holdings.json").then(response => {
         for (let option of [30, 50, 100]) {
              html += `<option value="${option}" ${option === limit ? 'selected': ''}>${option} Records</option>`
         }
-        html += `</select></div><table><thead><tr><td>Ticker</td><td>Title</td><td>Holding Ticker</td><td>Holding</td>
+        html += `</select></div><table><thead><tr><td>ETF Ticker</td><td>ETF</td><td>Ticker</td><td>Holding</td>
                 <td class="weight-header ${sorted_weight}">Weight</td></tr>
                 </thead><tbody class="table-content">`
         if (arr.length) {
